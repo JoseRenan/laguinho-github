@@ -14,15 +14,26 @@ var githubBaseURL = "https://api.github.com/repos/"
 
 func GetDataset(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
+
 	path := r.FormValue("path")
-	resp, err := requestGithubDataset(params["owner"], params["repo"], path)
+	owner := params["owner"]
+	repo := params["repo"]
+
+	log.Printf("Searching %s in %s/%s...\n", path, owner, repo)
+
+	resp, err := requestGithubDataset(owner, repo, path)
 
 	if err != nil {
 		http.Error(w, "Error requesting to github", http.StatusInternalServerError)
 	}
 
+	log.Printf("Found %s in %s/%s!\n", path, owner, repo)
+
 	result, _ := searchForFiles(resp)
-	json.NewEncoder(w).Encode(result)
+
+	response, _ := json.Marshal(result)
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(response)
 }
 
 func requestGithubDataset(owner string, repo string, path string) ([]map[string]string, error) {
@@ -31,7 +42,6 @@ func requestGithubDataset(owner string, repo string, path string) ([]map[string]
 }
 
 func requestGithubDatasetWithURL(requestURL string) ([]map[string]string, error) {
-	log.Println("Requesting", requestURL)
 
 	resp, err := http.Get(requestURL)
 	if err != nil {

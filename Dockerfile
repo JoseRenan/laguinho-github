@@ -6,4 +6,7 @@ ADD . /go/src/github.com/JoseRenan/laguinho-github
 
 WORKDIR /go/src/github.com/JoseRenan/laguinho-github 
 
-ENTRYPOINT go run main.go
+RUN go mod tidy
+RUN go build -o laguinho-github
+
+ENTRYPOINT ./laguinho-github

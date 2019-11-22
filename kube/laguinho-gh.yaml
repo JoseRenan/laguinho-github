@@ -21,8 +21,6 @@ spec:
     spec:
       containers:
       - name: laguinho-github
-        image: docker.pkg.github.com/joserenan/laguinho-github/laguinho-github:latest
+        image: joserenan/laguinho-github
         ports:
         - containerPort: 8080
-      imagePullSecrets:
-      - name: regcred

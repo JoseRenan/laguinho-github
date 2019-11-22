@@ -1,9 +1,11 @@
 package app
 
 import (
+	"log"
+	"net/http"
+
 	"github.com/JoseRenan/laguinho-github/api"
 	"github.com/gorilla/mux"
-	"net/http"
 )
 
 type App struct {
@@ -25,6 +27,7 @@ func (a *App) initializeRoutes() {
 }
 
 func (a *App) Run() {
+	log.Println("Listening to", a.addr)
 	a.initializeRoutes()
-	http.ListenAndServe(a.addr, a.Router)
+	log.Fatal(http.ListenAndServe(a.addr, a.Router))
 }
