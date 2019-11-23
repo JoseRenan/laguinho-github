@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+
+kind: Deployment
+
+metadata:
+  name: laguinho-api
+  labels:
+    app: laguinho-api
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: laguinho-api
+  
+  template:
+    metadata:
+      name: laguinho-api
+      labels:
+        app: laguinho-api
+
+    spec:
+      containers:
+      - name: laguinho-api
+        image: joserenan/laguinho-api:1.0.4
+        env:
+          - name: LAGUINHO_MONGO_HOST_PORT
+            value: mongo
+        ports:
+        - containerPort: 80

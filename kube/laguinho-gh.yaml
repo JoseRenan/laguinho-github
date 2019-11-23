@@ -6,6 +6,7 @@ metadata:
   name: laguinho-github
   labels:
     app: laguinho-github
+
 spec:
   replicas: 3
   selector:
@@ -21,6 +22,6 @@ spec:
     spec:
       containers:
       - name: laguinho-github
-        image: joserenan/laguinho-github
+        image: joserenan/laguinho-github:1.0.1
         ports:
         - containerPort: 8080
