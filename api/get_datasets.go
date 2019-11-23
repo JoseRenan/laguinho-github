@@ -29,7 +29,8 @@ func GetDataset(w http.ResponseWriter, r *http.Request) {
 
 	log.Printf("Found %s in %s/%s!\n", path, owner, repo)
 
-	result, _ := searchForFiles(resp)
+	result := map[string]string{}
+	searchForFiles(resp, "/", result)
 
 	response, _ := json.Marshal(result)
 	w.Header().Set("Content-Type", "application/json")
@@ -60,23 +61,21 @@ func requestGithubDatasetWithURL(requestURL string) ([]map[string]string, error)
 	return result, nil
 }
 
-func searchForFiles(dir []map[string]string) (map[string]interface{}, error) {
-	result := map[string]interface{}{}
+func searchForFiles(dir []map[string]string, dirName string, result map[string]string) error {
 	for _, e := range dir {
 		if e["type"] == "file" {
-			result[e["name"]] = e["download_url"]
+			log.Println(dirName, e["name"])
+			result[dirName+e["name"]] = e["download_url"]
 		} else {
 			newDir, err := requestGithubDatasetWithURL(e["url"])
 			if err != nil {
-				return nil, err
+				return err
 			}
-
-			result[e["name"]], err = searchForFiles(newDir)
+			err = searchForFiles(newDir, dirName+e["name"]+"/", result)
 			if err != nil {
-				return nil, err
+				return err
 			}
 		}
 	}
-
-	return result, nil
+	return nil
 }
